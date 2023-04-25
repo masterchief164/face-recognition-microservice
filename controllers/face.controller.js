@@ -1,4 +1,5 @@
 const faceService = require('../services/face.service');
+const {sendMessage} = require('../bin/sendMessage.util');
 
 const addFaces = async (message) => {
     message = JSON.parse(message)
@@ -13,16 +14,16 @@ const addFaces = async (message) => {
     }
 }
 
-const checkFace = async (req, res) => {
+const checkFace = async (message) => {
     try {
-        const File1 = req.files.File1.tempFilePath;
-        const userId = req.user._id;
-        let result = await faceService.getDescriptorsFromDB(File1, userId);
-        res.json({result});
+        const File1 = Buffer.from(message.File1);
+        const userId = message.userId;
+        console.log(message.uuid)
+        const result =  await faceService.getDescriptorsFromDB(File1, userId);
+        await sendMessage(result, message.uuid)
+        console.log(result);
     } catch (error) {
         console.log(error);
-        res.status(500)
-            .send({error});
     }
 }
 

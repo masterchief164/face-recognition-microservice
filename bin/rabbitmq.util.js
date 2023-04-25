@@ -1,10 +1,12 @@
 const amqplib = require('amqplib');
 const controller = require('../controllers/face.controller');
 
-const getMessage = async ()=>{
+require("dotenv").config();
+const url = process.env.RABBITMQ_URL;
+const getMessage = async () => {
     try {
 
-        const connection = await amqplib.connect("amqp://localhost:5672")
+        const connection = await amqplib.connect(url)
         const channel = await connection.createChannel();
         await channel.assertQueue("jobs", {durable: true});
         await channel.prefetch(1);
