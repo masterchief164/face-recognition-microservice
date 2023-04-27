@@ -29,14 +29,18 @@ async function uploadLabeledImages(images, userId) {
             // Read each face and save the face descriptions in the descriptions array
             const detections = await faceApi.detectSingleFace(img)
                 .withFaceLandmarks().withFaceDescriptor();
-            if (!detections)
-                return false;
+            if (!detections) return false;
             descriptions.push(detections.descriptor);
         }
 
 
         // Create a new face document with the given label and save it in DB
-        await UserModel.findByIdAndUpdate(userId, {$set: {descriptions: descriptions}}, {runValidators: true});
+        await UserModel.findByIdAndUpdate(userId, {
+            $set: {
+                descriptions: descriptions,
+                faceData: true
+            }
+        }, {runValidators: true});
         console.log("Face data saved successfully");
         return true;
     } catch (error) {
@@ -67,7 +71,7 @@ async function getDescriptorsFromDB(image, userId) {
         }
     }
     console.log(minDistance);
-    return minDistance< 0.55;
+    return minDistance < 0.55;
 }
 
 module.exports = {uploadLabeledImages, getDescriptorsFromDB}

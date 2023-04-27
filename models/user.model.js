@@ -30,7 +30,10 @@ const userSchema = new mongoose.Schema({
     }, descriptions: {
         type: Array,
         required: true,
-    },
+    }, faceData: {
+        type: Boolean,
+        default: false,
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

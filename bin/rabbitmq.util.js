@@ -13,10 +13,18 @@ const getMessage = async () => {
         await channel.consume("jobs", async (message) => {
             const job = JSON.parse(message.content.toString());
             if (job.type === "addFace") {
-                await controller.addFaces(message.content.toString());
+                try {
+                    await controller.addFaces(message.content.toString());
+                } catch (err) {
+                    console.log(err)
+                }
                 channel.ack(message)
             } else if (job.type === "checkFace") {
-                await controller.checkFace(job)
+                try {
+                    await controller.checkFace(job)
+                } catch (err) {
+                    console.log(err)
+                }
                 channel.ack(message)
             } else {
                 channel.ack(message)
